@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --soilab-navy: #46549c;
+  --soilab-blue: #248dac;
+  --soilab-green: #228d7b;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 50%, #eef4ff 100%);
+  color: #172033;
+  font-family: "Noto Sans KR", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(70, 84, 156, 0.15);
+}
+
+@page {
+  size: A4 portrait;
+  margin: 10mm;
+}
+
+@media print {
+  html,
+  body {
+    background: #fff;
+  }
+
+  body {
+    margin: 0;
+  }
+
+  main {
+    min-height: auto !important;
+  }
+
+  article {
+    width: 190mm;
+    min-height: 0;
+    margin: 0 auto;
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+}
