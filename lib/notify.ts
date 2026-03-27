@@ -236,7 +236,7 @@ export async function sendSessionLinkNotification(
 
   const recipient = getLecturerEmail(session);
   const publicLink = getPublicLink(session, baseUrl);
-  const subject = `[강의확인서 링크 발송 준비] ${session.lecture_title}`;
+  const subject = "[강의확인서 제출 링크]";
   const html = `
     <div style="font-family:'Noto Sans KR',Arial,sans-serif;line-height:1.7;color:#172033">
       <h1 style="font-size:20px;color:#46549C;margin-bottom:16px">강의확인서 제출 링크</h1>
