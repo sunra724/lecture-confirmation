@@ -31,6 +31,8 @@ export type SubmissionRecord = {
   lecturer_name: string;
   lecturer_phone: string;
   resident_id: string;
+  ocr_name: string;
+  ocr_address: string;
   affiliation_title: string;
   address: string;
   bank_name: string;
@@ -69,6 +71,8 @@ export type SubmissionInput = {
   lecturer_name: string;
   lecturer_phone: string;
   resident_id?: string;
+  ocr_name?: string;
+  ocr_address?: string;
   affiliation_title: string;
   address: string;
   bank_name: string;

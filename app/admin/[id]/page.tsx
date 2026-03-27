@@ -106,52 +106,72 @@ export default async function AdminDetailPage({ params }: { params: { id: string
         <section className="rounded-[32px] border border-white/70 bg-white p-6 shadow-soft">
           <h2 className="text-lg font-bold text-slate-900">강사 제출 정보</h2>
           {submission ? (
-            <dl className="mt-4 grid gap-4 md:grid-cols-2">
+            <div className="mt-4 space-y-6">
               <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">강사명</dt>
-                <dd className="mt-1 text-sm text-slate-700">{submission.lecturer_name}</dd>
+                <h3 className="text-sm font-bold text-slate-900">OCR 추출 정보 (수정 가능)</h3>
+                <dl className="mt-3 grid gap-4 md:grid-cols-2">
+                  <div>
+                    <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">이름</dt>
+                    <dd className="mt-1 text-sm text-slate-700">{submission.ocr_name || submission.lecturer_name || "-"}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">주민번호</dt>
+                    <dd className="mt-1 text-sm text-slate-700">{submission.resident_id || "-"}</dd>
+                  </div>
+                  <div className="md:col-span-2">
+                    <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">주소</dt>
+                    <dd className="mt-1 text-sm text-slate-700">{submission.ocr_address || submission.address || "-"}</dd>
+                  </div>
+                </dl>
               </div>
-              <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">연락처</dt>
-                <dd className="mt-1 text-sm text-slate-700">{normalizePhone(submission.lecturer_phone)}</dd>
-              </div>
-              <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">이메일</dt>
-                <dd className="mt-1 text-sm text-slate-700">{session.lecturer_email || "-"}</dd>
-              </div>
-              <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">주민번호</dt>
-                <dd className="mt-1 text-sm text-slate-700">{submission.resident_id || "-"}</dd>
-              </div>
-              <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">소속 및 직위</dt>
-                <dd className="mt-1 text-sm text-slate-700">{submission.affiliation_title || "-"}</dd>
-              </div>
-              <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">주소</dt>
-                <dd className="mt-1 text-sm text-slate-700">{submission.address || "-"}</dd>
-              </div>
-              <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">은행명</dt>
-                <dd className="mt-1 text-sm text-slate-700">{submission.bank_name}</dd>
-              </div>
-              <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">계좌번호</dt>
-                <dd className="mt-1 text-sm text-slate-700">{submission.account_number}</dd>
-              </div>
-              <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">예금주</dt>
-                <dd className="mt-1 text-sm text-slate-700">{submission.account_holder}</dd>
-              </div>
-              <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">제출일시</dt>
-                <dd className="mt-1 text-sm text-slate-700">{formatDateTime(submission.created_at)}</dd>
-              </div>
-              <div>
-                <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">개인정보 동의</dt>
-                <dd className="mt-1 text-sm text-slate-700">{submission.privacy_consent ? "동의함" : "미동의"}</dd>
-              </div>
-            </dl>
+
+              <dl className="grid gap-4 md:grid-cols-2">
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">강사명</dt>
+                  <dd className="mt-1 text-sm text-slate-700">{submission.lecturer_name}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">연락처</dt>
+                  <dd className="mt-1 text-sm text-slate-700">{normalizePhone(submission.lecturer_phone)}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">이메일</dt>
+                  <dd className="mt-1 text-sm text-slate-700">{session.lecturer_email || "-"}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">주민번호</dt>
+                  <dd className="mt-1 text-sm text-slate-700">{submission.resident_id || "-"}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">소속 및 직위</dt>
+                  <dd className="mt-1 text-sm text-slate-700">{submission.affiliation_title || "-"}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">주소</dt>
+                  <dd className="mt-1 text-sm text-slate-700">{submission.address || "-"}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">은행명</dt>
+                  <dd className="mt-1 text-sm text-slate-700">{submission.bank_name}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">계좌번호</dt>
+                  <dd className="mt-1 text-sm text-slate-700">{submission.account_number}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">예금주</dt>
+                  <dd className="mt-1 text-sm text-slate-700">{submission.account_holder}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">제출일시</dt>
+                  <dd className="mt-1 text-sm text-slate-700">{formatDateTime(submission.created_at)}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">개인정보 동의</dt>
+                  <dd className="mt-1 text-sm text-slate-700">{submission.privacy_consent ? "동의함" : "미동의"}</dd>
+                </div>
+              </dl>
+            </div>
           ) : (
             <p className="mt-4 text-sm text-slate-500">아직 제출되지 않았습니다.</p>
           )}

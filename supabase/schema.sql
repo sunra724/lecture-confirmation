@@ -29,6 +29,8 @@ create table if not exists submissions (
   lecturer_name text not null,
   lecturer_phone text not null,
   resident_id text default '',
+  ocr_name text default '',
+  ocr_address text default '',
   affiliation_title text default '',
   address text default '',
   bank_name text not null,
@@ -41,6 +43,12 @@ create table if not exists submissions (
 
 alter table submissions
 add column if not exists resident_id text default '';
+
+alter table submissions
+add column if not exists ocr_name text default '';
+
+alter table submissions
+add column if not exists ocr_address text default '';
 
 create table if not exists attachments (
   id bigint generated always as identity primary key,

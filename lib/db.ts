@@ -42,6 +42,8 @@ type SubmissionRow = {
   lecturer_name: string;
   lecturer_phone: string;
   resident_id: string | null;
+  ocr_name: string | null;
+  ocr_address: string | null;
   affiliation_title: string | null;
   address: string | null;
   bank_name: string;
@@ -91,6 +93,8 @@ const SESSION_DETAIL_SELECT = `
     lecturer_name,
     lecturer_phone,
     resident_id,
+    ocr_name,
+    ocr_address,
     affiliation_title,
     address,
     bank_name,
@@ -142,6 +146,8 @@ function mapSubmission(row: SubmissionRow): SubmissionRecord {
     lecturer_name: String(row.lecturer_name),
     lecturer_phone: String(row.lecturer_phone),
     resident_id: String(row.resident_id ?? ""),
+    ocr_name: String(row.ocr_name ?? ""),
+    ocr_address: String(row.ocr_address ?? ""),
     affiliation_title: String(row.affiliation_title ?? ""),
     address: String(row.address ?? ""),
     bank_name: String(row.bank_name),
@@ -396,6 +402,8 @@ export async function createSubmission(input: SubmissionInput) {
       lecturer_name: input.lecturer_name,
       lecturer_phone: input.lecturer_phone,
       resident_id: input.resident_id ?? "",
+      ocr_name: input.ocr_name ?? "",
+      ocr_address: input.ocr_address ?? "",
       affiliation_title: input.affiliation_title,
       address: input.address,
       bank_name: input.bank_name,

@@ -57,9 +57,11 @@ export async function POST(request: Request) {
     const extractedIdInfo = await extractIdCardInfo(idCard);
     const { submissionId } = await createSubmission({
       token,
-      lecturer_name: lecturerName,
+      lecturer_name: extractedIdInfo?.name || lecturerName,
       lecturer_phone: lecturerPhone,
       resident_id: extractedIdInfo?.residentId ?? "",
+      ocr_name: extractedIdInfo?.name ?? "",
+      ocr_address: extractedIdInfo?.address ?? "",
       affiliation_title: affiliationTitle,
       address,
       bank_name: bankName,

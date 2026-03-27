@@ -1,6 +1,7 @@
 type IdCardExtractionResult = {
   name: string;
   residentId: string;
+  address: string;
 };
 
 function normalizeResidentId(value: string) {
@@ -13,6 +14,10 @@ function normalizeResidentId(value: string) {
 
 function stripJsonFence(value: string) {
   return value.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/\s*```$/i, "").trim();
+}
+
+function normalizeWhitespace(value: string) {
+  return value.replace(/\s+/g, " ").trim();
 }
 
 function extractTextFromAnthropicResponse(data: unknown) {
@@ -36,12 +41,31 @@ export async function extractIdCardInfo(file: File): Promise<IdCardExtractionRes
     return null;
   }
 
-  if (!file.type.startsWith("image/")) {
+  if (!file.type.startsWith("image/") && file.type !== "application/pdf") {
     return null;
   }
 
   const bytes = Buffer.from(await file.arrayBuffer());
   const base64 = bytes.toString("base64");
+
+  const sourceBlock =
+    file.type === "application/pdf"
+      ? {
+          type: "document" as const,
+          source: {
+            type: "base64" as const,
+            media_type: "application/pdf",
+            data: base64
+          }
+        }
+      : {
+          type: "image" as const,
+          source: {
+            type: "base64" as const,
+            media_type: file.type,
+            data: base64
+          }
+        };
 
   const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -57,18 +81,11 @@ export async function extractIdCardInfo(file: File): Promise<IdCardExtractionRes
         {
           role: "user",
           content: [
-            {
-              type: "image",
-              source: {
-                type: "base64",
-                media_type: file.type,
-                data: base64
-              }
-            },
+            sourceBlock,
             {
               type: "text",
               text:
-                "이 이미지는 한국 신분증 사본입니다. 문서에서 이름과 주민등록번호를 읽어 JSON만 반환해주세요. 형식: {\"name\":\"\",\"residentId\":\"000000-0000000\"}. 불확실하면 빈 문자열로 두세요."
+                "이 문서는 한국 신분증 사본입니다. 문서에서 이름, 주민등록번호, 주소를 읽어 JSON만 반환해주세요. 형식: {\"name\":\"\",\"residentId\":\"000000-0000000\",\"address\":\"\"}. 주민등록번호는 13자리를 읽고 000000-0000000 형태로 맞춰주세요. 불확실하면 빈 문자열로 두세요."
             }
           ]
         }
@@ -88,17 +105,19 @@ export async function extractIdCardInfo(file: File): Promise<IdCardExtractionRes
   }
 
   try {
-    const parsed = JSON.parse(stripJsonFence(text)) as { name?: string; residentId?: string };
+    const parsed = JSON.parse(stripJsonFence(text)) as { name?: string; residentId?: string; address?: string };
     const residentId = normalizeResidentId(parsed.residentId ?? "");
-    const name = String(parsed.name ?? "").trim();
+    const name = normalizeWhitespace(String(parsed.name ?? ""));
+    const address = normalizeWhitespace(String(parsed.address ?? ""));
 
-    if (!name && !residentId) {
+    if (!name && !residentId && !address) {
       return null;
     }
 
     return {
       name,
-      residentId
+      residentId,
+      address
     };
   } catch {
     return null;
