@@ -129,20 +129,45 @@ async function sendSolapiNotification(session: SessionRecord, baseUrl?: string):
       disableSms: false,
       variables: {
         이름: recipientName
-      },
-      buttons: [
-        {
-          buttonName: "서류 제출하기",
-          buttonType: "WL",
-          linkMo: publicLink,
-          linkPc: publicLink
-        }
-      ]
+      }
     }
   });
 
   return {
     channel: "alimtalk" as const,
+    recipient: recipientPhone,
+    link: publicLink
+  };
+}
+
+async function sendSmsFallbackNotification(session: SessionRecord, baseUrl?: string): Promise<NotificationResult> {
+  const messageService = getSolapiService();
+  const { sender } = getSolapiConfig();
+  const publicLink = getPublicLink(session, baseUrl);
+  const recipientPhone = getLecturerPhone(session);
+  const recipientName = session.lecturer_name || "강사";
+
+  const text = [
+    "[협동조합 소이랩]",
+    `안녕하세요, ${recipientName}님.`,
+    "",
+    "강사비 지급을 위해 아래 서류 제출을 요청드립니다.",
+    "",
+    "제출 링크",
+    publicLink,
+    "",
+    `문의: ${process.env.NOTIFY_CONTACT ?? "053-941-9003"}`
+  ].join("\n");
+
+  await messageService.sendOne({
+    to: recipientPhone,
+    from: sender,
+    text,
+    type: "LMS"
+  });
+
+  return {
+    channel: "sms" as const,
     recipient: recipientPhone,
     link: publicLink
   };
@@ -204,13 +229,24 @@ export async function sendSessionLinkNotification(
         link: emailResult.link
       };
     } catch (caughtError) {
-      const detail = caughtError instanceof Error ? caughtError.message : "알 수 없는 오류가 발생했습니다.";
-      throw new Error(`이메일은 발송되었지만 솔라피 발송은 실패했습니다. ${detail}`);
+      try {
+        const smsResult = await sendSmsFallbackNotification(session, baseUrl);
+        return {
+          channel: "combined" as const,
+          recipient: `${emailResult.recipient}, ${smsResult.recipient}`,
+          link: emailResult.link
+        };
+      } catch (smsError) {
+        const detail = smsError instanceof Error ? smsError.message : caughtError instanceof Error ? caughtError.message : "알 수 없는 오류가 발생했습니다.";
+        throw new Error(`이메일은 발송되었지만 알림톡과 문자 발송은 실패했습니다. ${detail}`);
+      }
     }
   }
 
   if (preferredChannel === "sms" || preferredChannel === "alimtalk") {
-    return sendSolapiNotification(session, baseUrl);
+    return preferredChannel === "sms"
+      ? sendSmsFallbackNotification(session, baseUrl)
+      : sendSolapiNotification(session, baseUrl);
   }
 
   const recipient = getLecturerEmail(session);
