@@ -60,6 +60,25 @@ export async function POST(request: Request, { params }: { params: { id: string 
       link: result.link
     });
   } catch (caughtError) {
+    console.error("Solapi notify error", {
+      sessionId: session.id,
+      channel,
+      origin,
+      lecturerName: session.lecturer_name,
+      lecturerPhone: session.lecturer_phone,
+      templateId: process.env.SOLAPI_TEMPLATE_ID,
+      pfId: process.env.SOLAPI_PFID,
+      sender: process.env.SOLAPI_SENDER,
+      error:
+        caughtError instanceof Error
+          ? {
+              name: caughtError.name,
+              message: caughtError.message,
+              stack: caughtError.stack
+            }
+          : caughtError
+    });
+
     const message = getReadableErrorMessage(caughtError);
     await markSessionNotification({ id: session.id, via: channel, error: message });
     return NextResponse.json({ message }, { status: 500 });
