@@ -4,6 +4,11 @@ import type { SessionRecord } from "@/lib/types";
 import { formatDate, formatFee, normalizePhone } from "@/lib/utils";
 
 export type NotificationChannel = "email" | "sms" | "alimtalk" | "combined";
+type NotificationResult = {
+  channel: NotificationChannel;
+  recipient: string;
+  link: string;
+};
 
 function normalizeBaseUrl(baseUrl: string) {
   const trimmed = baseUrl.trim();
@@ -93,7 +98,7 @@ function getSolapiConfig() {
   return { sender, pfId, templateId };
 }
 
-async function sendSolapiNotification(session: SessionRecord, baseUrl?: string) {
+async function sendSolapiNotification(session: SessionRecord, baseUrl?: string): Promise<NotificationResult> {
   const messageService = getSolapiService();
   const { sender, pfId, templateId } = getSolapiConfig();
   const publicLink = getPublicLink(session, baseUrl);
@@ -197,7 +202,7 @@ export async function sendSessionLinkNotification(
   session: SessionRecord,
   preferredChannel: NotificationChannel = "combined",
   baseUrl?: string
-) {
+): Promise<NotificationResult> {
   if (preferredChannel === "combined") {
     const [emailResult, messageResult] = await Promise.all([
       sendSessionLinkNotification(session, "email", baseUrl),
