@@ -134,15 +134,7 @@ async function sendSolapiNotification(session: SessionRecord, baseUrl?: string):
       disableSms: false,
       variables: {
         이름: recipientName
-      },
-      buttons: [
-        {
-          buttonName: "서류 제출하기",
-          buttonType: "WL",
-          linkMo: publicLink,
-          linkPc: publicLink
-        }
-      ]
+      }
     }
   });
 
