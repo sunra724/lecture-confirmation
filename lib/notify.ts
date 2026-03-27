@@ -103,7 +103,7 @@ async function sendSolapiNotification(session: SessionRecord, baseUrl?: string):
 
   const text = [
     "[협동조합 소이랩]",
-    `안녕하세요, ${recipientName}님.`,
+    "안녕하세요, #{이름}님.",
     "",
     "강사비 지급을 위해 아래 서류 제출을 요청드립니다.",
     "",
