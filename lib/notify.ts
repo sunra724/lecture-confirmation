@@ -56,8 +56,8 @@ function getPublicLink(session: SessionRecord, baseUrl?: string) {
 }
 
 function getSolapiService() {
-  const apiKey = process.env.SOLAPI_API_KEY;
-  const apiSecret = process.env.SOLAPI_API_SECRET;
+  const apiKey = process.env.SOLAPI_API_KEY?.trim();
+  const apiSecret = process.env.SOLAPI_API_SECRET?.trim();
 
   if (!apiKey || !apiSecret) {
     throw new Error("SOLAPI_API_KEY 또는 SOLAPI_API_SECRET이 설정되지 않았습니다.");
