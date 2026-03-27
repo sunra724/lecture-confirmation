@@ -18,7 +18,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
     return NextResponse.json({ message: "관리자 인증에 실패했습니다." }, { status: 401 });
   }
 
-  const session = getSession(Number(params.id));
+  const session = await getSession(Number(params.id));
   if (!session) {
     return NextResponse.json({ message: "강의 건을 찾을 수 없습니다." }, { status: 404 });
   }
@@ -29,7 +29,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
 
   try {
     const result = await sendSessionLinkNotification(session, channel, origin);
-    markSessionNotification({ id: session.id, via: result.channel });
+    await markSessionNotification({ id: session.id, via: result.channel });
     return NextResponse.json({
       ok: true,
       channel: result.channel,
@@ -37,7 +37,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
     });
   } catch (caughtError) {
     const message = caughtError instanceof Error ? caughtError.message : "링크 발송에 실패했습니다.";
-    markSessionNotification({ id: session.id, via: channel, error: message });
+    await markSessionNotification({ id: session.id, via: channel, error: message });
     return NextResponse.json({ message }, { status: 500 });
   }
 }

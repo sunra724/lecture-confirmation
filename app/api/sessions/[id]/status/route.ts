@@ -15,7 +15,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     return NextResponse.json({ message: "유효한 상태값이 아닙니다." }, { status: 400 });
   }
 
-  const session = updateSessionStatus(Number(params.id), body.status);
+  const session = await updateSessionStatus(Number(params.id), body.status);
   return session
     ? NextResponse.json(session)
     : NextResponse.json({ message: "강의 건을 찾을 수 없습니다." }, { status: 404 });

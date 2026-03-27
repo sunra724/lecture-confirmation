@@ -17,12 +17,12 @@ import {
   normalizePhone
 } from "@/lib/utils";
 
-export default function AdminDetailPage({ params }: { params: { id: string } }) {
+export default async function AdminDetailPage({ params }: { params: { id: string } }) {
   if (!requireAdminSession()) {
     redirect("/admin/login");
   }
 
-  const detail = getSessionDetail(Number(params.id));
+  const detail = await getSessionDetail(Number(params.id));
   if (!detail) notFound();
 
   const { session, submission, attachments } = detail;

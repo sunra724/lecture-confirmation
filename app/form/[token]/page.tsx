@@ -1,8 +1,8 @@
 import { LectureForm } from "@/components/LectureForm";
 import { getSessionByToken } from "@/lib/db";
 
-export default function PublicFormPage({ params }: { params: { token: string } }) {
-  const session = getSessionByToken(params.token);
+export default async function PublicFormPage({ params }: { params: { token: string } }) {
+  const session = await getSessionByToken(params.token);
 
   if (!session) {
     return (

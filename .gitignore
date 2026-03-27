@@ -2,5 +2,6 @@
 node_modules
 .next
 lecture.db
+lecture.db-shm
+lecture.db-wal
 uploads
-

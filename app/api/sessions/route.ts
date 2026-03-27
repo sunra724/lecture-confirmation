@@ -8,8 +8,8 @@ export async function GET() {
     return NextResponse.json({ message: "관리자 인증에 실패했습니다." }, { status: 401 });
   }
 
-  seedExampleSession();
-  return NextResponse.json(listSessions());
+  await seedExampleSession();
+  return NextResponse.json(await listSessions());
 }
 
 export async function POST(request: Request) {
@@ -18,6 +18,6 @@ export async function POST(request: Request) {
   }
 
   const body = (await request.json()) as SessionInput;
-  const created = createSession(body);
+  const created = await createSession(body);
   return NextResponse.json(created, { status: 201 });
 }

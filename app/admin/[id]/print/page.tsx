@@ -4,12 +4,12 @@ import { requireAdminSession } from "@/lib/auth";
 import { getSessionDetail } from "@/lib/db";
 import { formatFee, normalizePhone } from "@/lib/utils";
 
-export default function AdminPrintPage({ params }: { params: { id: string } }) {
+export default async function AdminPrintPage({ params }: { params: { id: string } }) {
   if (!requireAdminSession()) {
     redirect("/admin/login");
   }
 
-  const detail = getSessionDetail(Number(params.id));
+  const detail = await getSessionDetail(Number(params.id));
   if (!detail) notFound();
 
   const { session, submission } = detail;
