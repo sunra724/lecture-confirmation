@@ -3,11 +3,11 @@ import { cookies } from "next/headers";
 const COOKIE_NAME = "lecture_admin_session";
 
 export function getAdminPassword() {
-  return process.env.ADMIN_PASSWORD ?? "soilab2024";
+  return (process.env.ADMIN_PASSWORD ?? "soilab2024").trim();
 }
 
 export function isValidAdminPassword(password: string) {
-  return password === getAdminPassword();
+  return password.trim() === getAdminPassword();
 }
 
 export function createAdminSession() {
