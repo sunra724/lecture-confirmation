@@ -220,27 +220,12 @@ export async function sendSessionLinkNotification(
 ): Promise<NotificationResult> {
   if (preferredChannel === "combined") {
     const emailResult = await sendSessionLinkNotification(session, "email", baseUrl);
-    try {
-      const messageResult = await sendSolapiNotification(session, baseUrl);
-
-      return {
-        channel: "combined" as const,
-        recipient: `${emailResult.recipient}, ${messageResult.recipient}`,
-        link: emailResult.link
-      };
-    } catch (caughtError) {
-      try {
-        const smsResult = await sendSmsFallbackNotification(session, baseUrl);
-        return {
-          channel: "combined" as const,
-          recipient: `${emailResult.recipient}, ${smsResult.recipient}`,
-          link: emailResult.link
-        };
-      } catch (smsError) {
-        const detail = smsError instanceof Error ? smsError.message : caughtError instanceof Error ? caughtError.message : "알 수 없는 오류가 발생했습니다.";
-        throw new Error(`이메일은 발송되었지만 알림톡과 문자 발송은 실패했습니다. ${detail}`);
-      }
-    }
+    const smsResult = await sendSmsFallbackNotification(session, baseUrl);
+    return {
+      channel: "combined" as const,
+      recipient: `${emailResult.recipient}, ${smsResult.recipient}`,
+      link: emailResult.link
+    };
   }
 
   if (preferredChannel === "sms" || preferredChannel === "alimtalk") {
