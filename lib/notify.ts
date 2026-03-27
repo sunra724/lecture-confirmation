@@ -75,9 +75,9 @@ function getLecturerPhone(session: SessionRecord) {
 }
 
 function getSolapiConfig() {
-  const sender = process.env.SOLAPI_SENDER;
-  const pfId = process.env.SOLAPI_PFID;
-  const templateId = process.env.SOLAPI_TEMPLATE_ID;
+  const sender = process.env.SOLAPI_SENDER?.trim();
+  const pfId = process.env.SOLAPI_PFID?.trim();
+  const templateId = process.env.SOLAPI_TEMPLATE_ID?.trim();
 
   if (!sender) {
     throw new Error("SOLAPI_SENDER가 설정되지 않았습니다.");
