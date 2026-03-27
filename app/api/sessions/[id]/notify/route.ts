@@ -11,7 +11,14 @@ function getReadableErrorMessage(caughtError: unknown) {
     }
 
     if (message.includes("readonly text?") || message.includes("buttonType") || message.includes("kakaoOptions")) {
-      return "솔라피 발송 설정이 올바르지 않습니다. 버튼 링크 또는 템플릿 설정을 확인해주세요.";
+      return "솔라피 발송 설정이 올바르지 않습니다. 템플릿 ID, PFID, 치환변수, 버튼 설정을 확인해주세요.";
+    }
+
+    if (message.includes("이메일은 발송되었지만 솔라피 발송은 실패했습니다.")) {
+      return message.replace(
+        "readonly text?",
+        "솔라피 요청 형식"
+      );
     }
 
     return message;

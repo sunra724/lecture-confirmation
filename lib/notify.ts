@@ -191,16 +191,19 @@ export async function sendSessionLinkNotification(
   baseUrl?: string
 ): Promise<NotificationResult> {
   if (preferredChannel === "combined") {
-    const [emailResult, messageResult] = await Promise.all([
-      sendSessionLinkNotification(session, "email", baseUrl),
-      sendSolapiNotification(session, baseUrl)
-    ]);
+    const emailResult = await sendSessionLinkNotification(session, "email", baseUrl);
+    try {
+      const messageResult = await sendSolapiNotification(session, baseUrl);
 
-    return {
-      channel: "combined" as const,
-      recipient: `${emailResult.recipient}, ${messageResult.recipient}`,
-      link: emailResult.link
-    };
+      return {
+        channel: "combined" as const,
+        recipient: `${emailResult.recipient}, ${messageResult.recipient}`,
+        link: emailResult.link
+      };
+    } catch (caughtError) {
+      const detail = caughtError instanceof Error ? caughtError.message : "알 수 없는 오류가 발생했습니다.";
+      throw new Error(`이메일은 발송되었지만 솔라피 발송은 실패했습니다. ${detail}`);
+    }
   }
 
   if (preferredChannel === "sms" || preferredChannel === "alimtalk") {

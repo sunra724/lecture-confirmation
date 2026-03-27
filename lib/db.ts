@@ -621,14 +621,23 @@ export async function markSessionNotification(params: {
 }) {
   const supabase = getSupabaseAdmin();
   const timestamp = now();
+  const payload = params.error
+    ? {
+        link_sent_at: null,
+        link_sent_via: null,
+        last_notification_error: params.error,
+        updated_at: timestamp
+      }
+    : {
+        link_sent_at: timestamp,
+        link_sent_via: params.via,
+        last_notification_error: null,
+        updated_at: timestamp
+      };
+
   const { error } = await supabase
     .from("sessions")
-    .update({
-      link_sent_at: timestamp,
-      link_sent_via: params.via,
-      last_notification_error: params.error ?? null,
-      updated_at: timestamp
-    })
+    .update(payload)
     .eq("id", params.id);
 
   if (error) {
