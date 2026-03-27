@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import type { SessionRecord, SessionStatus } from "@/lib/types";
 import { SessionCreateDialog } from "@/components/SessionCreateDialog";
@@ -27,6 +27,10 @@ const FILTERS: Array<{ key: "all" | SessionStatus; label: string }> = [
 export function AdminDashboard({ initialSessions }: { initialSessions: SessionRecord[] }) {
   const [filter, setFilter] = useState<"all" | SessionStatus>("all");
   const [sessions, setSessions] = useState(initialSessions);
+
+  useEffect(() => {
+    setSessions(initialSessions);
+  }, [initialSessions]);
 
   const filteredSessions = useMemo(() => {
     return filter === "all" ? sessions : sessions.filter((session) => session.status === filter);
