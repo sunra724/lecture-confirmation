@@ -23,7 +23,7 @@ function getMailer() {
 
 function getFromAddress() {
   const user = process.env.EMAIL_USER;
-  const name = process.env.NOTIFY_FROM_NAME ?? "SOILAB COOP";
+  const name = process.env.NOTIFY_FROM_NAME ?? "협동조합 소이랩";
   if (!user) {
     throw new Error("EMAIL_USER가 설정되지 않았습니다.");
   }
