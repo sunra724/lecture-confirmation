@@ -109,6 +109,7 @@ export default async function AdminDetailPage({ params }: { params: { id: string
             <div className="mt-4 space-y-6">
               <div>
                 <h3 className="text-sm font-bold text-slate-900">OCR 추출 정보 (수정 가능)</h3>
+                <p className="mt-1 text-xs text-slate-500">OCR 원문도 함께 저장되어 있어, 주민번호 인식이 애매할 때 바로 확인하고 보정할 수 있습니다.</p>
                 <dl className="mt-3 grid gap-4 md:grid-cols-2">
                   <div>
                     <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">이름</dt>
@@ -123,6 +124,10 @@ export default async function AdminDetailPage({ params }: { params: { id: string
                     <dd className="mt-1 text-sm text-slate-700">{submission.ocr_address || submission.address || "-"}</dd>
                   </div>
                 </dl>
+                <details className="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <summary className="cursor-pointer text-sm font-semibold text-slate-700">OCR 원문 보기</summary>
+                  <pre className="mt-3 whitespace-pre-wrap break-words text-xs text-slate-600">{submission.ocr_raw || "저장된 OCR 원문이 없습니다."}</pre>
+                </details>
               </div>
 
               <dl className="grid gap-4 md:grid-cols-2">

@@ -175,6 +175,7 @@ async function sendSmsFallbackNotification(session: SessionRecord, baseUrl?: str
 
 export async function sendSubmissionNotification(params: {
   lecturerName: string;
+  lecturerEmail?: string;
   lectureTitle: string;
   lectureDate: string;
   timeStart: string;
@@ -183,8 +184,8 @@ export async function sendSubmissionNotification(params: {
   submittedAt: string;
   adminUrl: string;
 }) {
-  const subject = `[강의확인서 제출] ${params.lecturerName} 강사 - ${params.lectureTitle} (${params.lectureDate})`;
-  const html = `
+  const adminSubject = `[강의확인서 제출] ${params.lecturerName} 강사 - ${params.lectureTitle} (${params.lectureDate})`;
+  const adminHtml = `
     <div style="font-family:'Noto Sans KR',Arial,sans-serif;line-height:1.7;color:#172033">
       <h1 style="font-size:20px;color:#46549C;margin-bottom:16px">강의확인서 제출 알림</h1>
       <table style="border-collapse:collapse;width:100%;max-width:640px">
@@ -208,8 +209,39 @@ export async function sendSubmissionNotification(params: {
 
   await sendMail({
     to: getAdminRecipient(),
-    subject,
-    html
+    subject: adminSubject,
+    html: adminHtml
+  });
+
+  const submitterRecipient = params.lecturerEmail?.trim();
+  if (!submitterRecipient) {
+    return;
+  }
+
+  const submitterSubject = `[강의확인서 제출 완료] ${params.lectureTitle}`;
+  const submitterHtml = `
+    <div style="font-family:'Noto Sans KR',Arial,sans-serif;line-height:1.7;color:#172033">
+      <h1 style="font-size:20px;color:#46549C;margin-bottom:16px">강의확인서 제출이 완료되었습니다</h1>
+      <p>안녕하세요, ${params.lecturerName}님.</p>
+      <p>강의확인서 및 지급 관련 서류가 정상적으로 제출되었습니다.</p>
+      <table style="border-collapse:collapse;width:100%;max-width:640px">
+        <tbody>
+          <tr><td style="padding:8px 0;font-weight:700">강의명</td><td>${params.lectureTitle}</td></tr>
+          <tr><td style="padding:8px 0;font-weight:700">강의일</td><td>${formatDate(params.lectureDate)}</td></tr>
+          <tr><td style="padding:8px 0;font-weight:700">시간</td><td>${params.timeStart} - ${params.timeEnd}</td></tr>
+          <tr><td style="padding:8px 0;font-weight:700">강사비</td><td>${formatFee(params.fee)}</td></tr>
+          <tr><td style="padding:8px 0;font-weight:700">제출시각</td><td>${params.submittedAt}</td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:24px">서류 검토 후 지급 절차가 진행될 예정입니다.</p>
+      <p style="margin-top:24px;color:#64748B;font-size:13px">본 메일은 강의확인서 시스템에서 자동 발송되었습니다.</p>
+    </div>
+  `;
+
+  await sendMail({
+    to: submitterRecipient,
+    subject: submitterSubject,
+    html: submitterHtml
   });
 }
 
