@@ -55,10 +55,6 @@ function getPublicLink(session: SessionRecord, baseUrl?: string) {
   return `${resolvedBaseUrl}/form/${session.token}`;
 }
 
-function getProtocolStrippedLink(url: string) {
-  return url.replace(/^https?:\/\//, "");
-}
-
 function getSolapiService() {
   const apiKey = process.env.SOLAPI_API_KEY;
   const apiSecret = process.env.SOLAPI_API_SECRET;
@@ -102,7 +98,6 @@ async function sendSolapiNotification(session: SessionRecord, baseUrl?: string):
   const messageService = getSolapiService();
   const { sender, pfId, templateId } = getSolapiConfig();
   const publicLink = getPublicLink(session, baseUrl);
-  const buttonLink = getProtocolStrippedLink(publicLink);
   const recipientPhone = getLecturerPhone(session);
   const recipientName = session.lecturer_name || "강사";
 
@@ -144,8 +139,8 @@ async function sendSolapiNotification(session: SessionRecord, baseUrl?: string):
         {
           buttonName: "서류 제출하기",
           buttonType: "WL",
-          linkMo: buttonLink,
-          linkPc: buttonLink
+          linkMo: publicLink,
+          linkPc: publicLink
         }
       ]
     }

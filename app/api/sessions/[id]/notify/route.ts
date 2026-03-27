@@ -3,6 +3,23 @@ import { requireAdminSession } from "@/lib/auth";
 import { getSession, markSessionNotification } from "@/lib/db";
 import { sendSessionLinkNotification, type NotificationChannel } from "@/lib/notify";
 
+function getReadableErrorMessage(caughtError: unknown) {
+  if (caughtError instanceof Error) {
+    const message = caughtError.message?.trim();
+    if (!message) {
+      return "링크 발송에 실패했습니다.";
+    }
+
+    if (message.includes("readonly text?") || message.includes("buttonType") || message.includes("kakaoOptions")) {
+      return "솔라피 발송 설정이 올바르지 않습니다. 버튼 링크 또는 템플릿 설정을 확인해주세요.";
+    }
+
+    return message;
+  }
+
+  return "링크 발송에 실패했습니다.";
+}
+
 function getRequestOrigin(request: Request) {
   const forwardedProto = request.headers.get("x-forwarded-proto");
   const forwardedHost = request.headers.get("x-forwarded-host");
@@ -36,7 +53,7 @@ export async function POST(request: Request, { params }: { params: { id: string 
       link: result.link
     });
   } catch (caughtError) {
-    const message = caughtError instanceof Error ? caughtError.message : "링크 발송에 실패했습니다.";
+    const message = getReadableErrorMessage(caughtError);
     await markSessionNotification({ id: session.id, via: channel, error: message });
     return NextResponse.json({ message }, { status: 500 });
   }
