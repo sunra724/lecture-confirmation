@@ -63,6 +63,7 @@ export async function POST(request: Request) {
       ocr_name: extractedIdInfo?.name ?? "",
       ocr_address: extractedIdInfo?.address ?? "",
       ocr_raw: extractedIdInfo?.raw ?? "",
+      ocr_error: extractedIdInfo?.error ?? "",
       affiliation_title: affiliationTitle,
       address,
       bank_name: bankName,

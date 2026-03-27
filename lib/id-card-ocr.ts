@@ -3,6 +3,7 @@ export type IdCardExtractionResult = {
   residentId: string;
   address: string;
   raw: string;
+  error: string;
 };
 
 function normalizeResidentId(value: string) {
@@ -87,11 +88,23 @@ export async function extractIdCardInfo(file: File): Promise<IdCardExtractionRes
   const model = process.env.ANTHROPIC_MODEL?.trim() || "claude-sonnet-4-20250514";
 
   if (!apiKey) {
-    return null;
+    return {
+      name: "",
+      residentId: "",
+      address: "",
+      raw: "",
+      error: "ANTHROPIC_API_KEY가 설정되지 않았습니다."
+    };
   }
 
   if (!file.type.startsWith("image/") && file.type !== "application/pdf") {
-    return null;
+    return {
+      name: "",
+      residentId: "",
+      address: "",
+      raw: "",
+      error: `지원하지 않는 파일 형식입니다. (${file.type || "unknown"})`
+    };
   }
 
   const bytes = Buffer.from(await file.arrayBuffer());
@@ -155,13 +168,25 @@ export async function extractIdCardInfo(file: File): Promise<IdCardExtractionRes
 
   if (!response.ok) {
     const errorText = await response.text().catch(() => "");
-    throw new Error(`Claude OCR 요청에 실패했습니다. ${errorText}`.trim());
+    return {
+      name: "",
+      residentId: "",
+      address: "",
+      raw: errorText,
+      error: `Claude OCR 요청에 실패했습니다. ${errorText}`.trim()
+    };
   }
 
   const data = (await response.json().catch(() => null)) as unknown;
   const raw = extractTextFromAnthropicResponse(data);
   if (!raw) {
-    return null;
+    return {
+      name: "",
+      residentId: "",
+      address: "",
+      raw: "",
+      error: "Claude OCR 응답에 텍스트가 없습니다."
+    };
   }
 
   let parsedValues = {
@@ -191,7 +216,8 @@ export async function extractIdCardInfo(file: File): Promise<IdCardExtractionRes
       name: "",
       residentId: "",
       address: "",
-      raw
+      raw,
+      error: "OCR 결과에서 이름, 주민번호, 주소를 추출하지 못했습니다."
     };
   }
 
@@ -199,6 +225,7 @@ export async function extractIdCardInfo(file: File): Promise<IdCardExtractionRes
     name,
     residentId,
     address,
-    raw
+    raw,
+    error: residentId ? "" : "OCR 결과는 받았지만 주민번호를 추출하지 못했습니다."
   };
 }

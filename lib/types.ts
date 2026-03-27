@@ -34,6 +34,7 @@ export type SubmissionRecord = {
   ocr_name: string;
   ocr_address: string;
   ocr_raw: string;
+  ocr_error: string;
   affiliation_title: string;
   address: string;
   bank_name: string;
@@ -75,6 +76,7 @@ export type SubmissionInput = {
   ocr_name?: string;
   ocr_address?: string;
   ocr_raw?: string;
+  ocr_error?: string;
   affiliation_title: string;
   address: string;
   bank_name: string;

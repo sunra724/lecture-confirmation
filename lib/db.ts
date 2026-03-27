@@ -45,6 +45,7 @@ type SubmissionRow = {
   ocr_name: string | null;
   ocr_address: string | null;
   ocr_raw: string | null;
+  ocr_error: string | null;
   affiliation_title: string | null;
   address: string | null;
   bank_name: string;
@@ -97,6 +98,7 @@ const SESSION_DETAIL_SELECT = `
     ocr_name,
     ocr_address,
     ocr_raw,
+    ocr_error,
     affiliation_title,
     address,
     bank_name,
@@ -151,6 +153,7 @@ function mapSubmission(row: SubmissionRow): SubmissionRecord {
     ocr_name: String(row.ocr_name ?? ""),
     ocr_address: String(row.ocr_address ?? ""),
     ocr_raw: String(row.ocr_raw ?? ""),
+    ocr_error: String(row.ocr_error ?? ""),
     affiliation_title: String(row.affiliation_title ?? ""),
     address: String(row.address ?? ""),
     bank_name: String(row.bank_name),
@@ -408,6 +411,7 @@ export async function createSubmission(input: SubmissionInput) {
       ocr_name: input.ocr_name ?? "",
       ocr_address: input.ocr_address ?? "",
       ocr_raw: input.ocr_raw ?? "",
+      ocr_error: input.ocr_error ?? "",
       affiliation_title: input.affiliation_title,
       address: input.address,
       bank_name: input.bank_name,

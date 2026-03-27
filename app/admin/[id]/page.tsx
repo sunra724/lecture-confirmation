@@ -110,6 +110,12 @@ export default async function AdminDetailPage({ params }: { params: { id: string
               <div>
                 <h3 className="text-sm font-bold text-slate-900">OCR 추출 정보 (수정 가능)</h3>
                 <p className="mt-1 text-xs text-slate-500">OCR 원문도 함께 저장되어 있어, 주민번호 인식이 애매할 때 바로 확인하고 보정할 수 있습니다.</p>
+                {submission.ocr_error ? (
+                  <div className="mt-3 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                    <div className="font-semibold">OCR 확인 필요</div>
+                    <div className="mt-1 whitespace-pre-wrap break-words">{submission.ocr_error}</div>
+                  </div>
+                ) : null}
                 <dl className="mt-3 grid gap-4 md:grid-cols-2">
                   <div>
                     <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">이름</dt>
