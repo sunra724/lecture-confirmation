@@ -32,6 +32,11 @@ export function SessionStatusActions({ sessionId, currentStatus }: { sessionId: 
         throw new Error(data?.message ?? "상태 변경 중 오류가 발생했습니다.");
       }
 
+      const data = (await response.json().catch(() => null)) as { message?: string } | null;
+      if (data?.message) {
+        window.alert(data.message);
+      }
+
       router.refresh();
     } catch (caughtError) {
       window.alert(caughtError instanceof Error ? caughtError.message : "상태 변경 중 오류가 발생했습니다.");

@@ -63,7 +63,7 @@ export default async function AdminPrintPage({ params }: { params: { id: string 
                   <th className="border border-black px-3 py-3 text-center font-medium">성 명</th>
                   <td className="border border-black px-3 py-3">{lecturerName}</td>
                   <th className="border border-black px-3 py-3 text-center font-medium">주민번호</th>
-                  <td className="border border-black px-3 py-3"></td>
+                  <td className="border border-black px-3 py-3">{submission?.resident_id ?? ""}</td>
                 </tr>
                 <tr>
                   <th className="border border-black px-3 py-3 text-center font-medium">소속 및 직위</th>
@@ -81,7 +81,7 @@ export default async function AdminPrintPage({ params }: { params: { id: string 
                   <th className="border border-black px-3 py-3 text-center font-medium">금 액</th>
                   <td className="border border-black px-3 py-3 text-center">
                     <div>{formatFee(session.fee)}</div>
-                    <div className="mt-1 text-[11px] text-slate-500">(소득세 등 공제 전 지급 기준 금액)</div>
+                    <div className="mt-1 text-[11px] text-slate-500">(125,000원 이상 지급시 소득세 8.8% 적용, 선공제후 차액지급)</div>
                   </td>
                   <th className="border border-black px-3 py-3 text-center font-medium">지급방법</th>
                   <td className="border border-black px-3 py-3 text-center">계좌이체</td>

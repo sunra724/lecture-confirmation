@@ -213,6 +213,29 @@ export async function sendSubmissionNotification(params: {
   });
 }
 
+export async function sendPaymentCompletedNotification(session: SessionRecord) {
+  const messageService = getSolapiService();
+  const { sender } = getSolapiConfig();
+  const recipientPhone = getLecturerPhone(session);
+  const recipientName = session.lecturer_name || "강사";
+  const text = [
+    "[협동조합 소이랩]",
+    `안녕하세요, ${recipientName}님.`,
+    "",
+    `${session.lecture_title} 강사료 지급이 완료되었습니다.`,
+    "확인해주셔서 감사합니다.",
+    "",
+    `문의: ${process.env.NOTIFY_CONTACT ?? "053-941-9003"}`
+  ].join("\n");
+
+  await messageService.sendOne({
+    to: recipientPhone,
+    from: sender,
+    text,
+    type: "LMS"
+  });
+}
+
 export async function sendSessionLinkNotification(
   session: SessionRecord,
   preferredChannel: NotificationChannel = "combined",

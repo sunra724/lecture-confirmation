@@ -120,6 +120,10 @@ export default async function AdminDetailPage({ params }: { params: { id: string
                 <dd className="mt-1 text-sm text-slate-700">{session.lecturer_email || "-"}</dd>
               </div>
               <div>
+                <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">주민번호</dt>
+                <dd className="mt-1 text-sm text-slate-700">{submission.resident_id || "-"}</dd>
+              </div>
+              <div>
                 <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">소속 및 직위</dt>
                 <dd className="mt-1 text-sm text-slate-700">{submission.affiliation_title || "-"}</dd>
               </div>

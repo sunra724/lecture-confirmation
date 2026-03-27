@@ -41,6 +41,7 @@ type SubmissionRow = {
   session_id: number;
   lecturer_name: string;
   lecturer_phone: string;
+  resident_id: string | null;
   affiliation_title: string | null;
   address: string | null;
   bank_name: string;
@@ -89,6 +90,7 @@ const SESSION_DETAIL_SELECT = `
     session_id,
     lecturer_name,
     lecturer_phone,
+    resident_id,
     affiliation_title,
     address,
     bank_name,
@@ -139,6 +141,7 @@ function mapSubmission(row: SubmissionRow): SubmissionRecord {
     session_id: Number(row.session_id),
     lecturer_name: String(row.lecturer_name),
     lecturer_phone: String(row.lecturer_phone),
+    resident_id: String(row.resident_id ?? ""),
     affiliation_title: String(row.affiliation_title ?? ""),
     address: String(row.address ?? ""),
     bank_name: String(row.bank_name),
@@ -392,6 +395,7 @@ export async function createSubmission(input: SubmissionInput) {
       session_id: session.id,
       lecturer_name: input.lecturer_name,
       lecturer_phone: input.lecturer_phone,
+      resident_id: input.resident_id ?? "",
       affiliation_title: input.affiliation_title,
       address: input.address,
       bank_name: input.bank_name,
@@ -598,6 +602,7 @@ export async function updateSessionDetail(id: number, input: SessionUpdateInput)
       .update({
         lecturer_name: input.lecturer_name,
         lecturer_phone: input.lecturer_phone,
+        resident_id: input.resident_id ?? current.submission.resident_id,
         affiliation_title: input.affiliation_title ?? current.submission.affiliation_title,
         address: input.address ?? current.submission.address,
         bank_name: input.bank_name ?? current.submission.bank_name,
@@ -645,6 +650,42 @@ export async function markSessionNotification(params: {
   }
 
   return getSession(params.id);
+}
+
+export async function listReviewedTaxRows() {
+  const supabase = getSupabaseAdmin();
+  const { data, error } = await supabase
+    .from("sessions")
+    .select(
+      `
+      fee,
+      status,
+      submissions (
+        lecturer_name,
+        resident_id
+      )
+    `
+    )
+    .in("status", ["reviewed", "paid"])
+    .order("id", { ascending: false });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return ((data ?? []) as Array<{
+    fee: number;
+    status: SessionRecord["status"];
+    submissions?: Array<{ lecturer_name: string; resident_id: string | null }> | { lecturer_name: string; resident_id: string | null } | null;
+  }>).map((row) => {
+    const submission = Array.isArray(row.submissions) ? (row.submissions[0] ?? null) : (row.submissions ?? null);
+    return {
+      lecturer_name: submission?.lecturer_name ?? "",
+      resident_id: submission?.resident_id ?? "",
+      fee: Number(row.fee ?? 0),
+      status: row.status
+    };
+  });
 }
 
 export async function seedExampleSession() {

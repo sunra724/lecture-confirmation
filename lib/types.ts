@@ -30,6 +30,7 @@ export type SubmissionRecord = {
   session_id: number;
   lecturer_name: string;
   lecturer_phone: string;
+  resident_id: string;
   affiliation_title: string;
   address: string;
   bank_name: string;
@@ -67,6 +68,7 @@ export type SubmissionInput = {
   token: string;
   lecturer_name: string;
   lecturer_phone: string;
+  resident_id?: string;
   affiliation_title: string;
   address: string;
   bank_name: string;
@@ -87,6 +89,7 @@ export type SessionUpdateInput = {
   lecturer_name: string;
   lecturer_phone: string;
   lecturer_email?: string;
+  resident_id?: string;
   affiliation_title?: string;
   address?: string;
   bank_name?: string;

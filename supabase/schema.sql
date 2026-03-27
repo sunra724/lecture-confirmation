@@ -28,6 +28,7 @@ create table if not exists submissions (
   session_id bigint not null unique references sessions(id) on delete cascade,
   lecturer_name text not null,
   lecturer_phone text not null,
+  resident_id text default '',
   affiliation_title text default '',
   address text default '',
   bank_name text not null,
@@ -37,6 +38,9 @@ create table if not exists submissions (
   signature_data text not null,
   created_at timestamptz not null default now()
 );
+
+alter table submissions
+add column if not exists resident_id text default '';
 
 create table if not exists attachments (
   id bigint generated always as identity primary key,

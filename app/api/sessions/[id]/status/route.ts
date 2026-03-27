@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdminSession } from "@/lib/auth";
-import { updateSessionStatus } from "@/lib/db";
+import { getSession, updateSessionStatus } from "@/lib/db";
+import { sendPaymentCompletedNotification } from "@/lib/notify";
 import type { SessionStatus } from "@/lib/types";
 
 const ALLOWED_STATUSES: SessionStatus[] = ["pending", "submitted", "reviewed", "paid"];
@@ -16,7 +17,24 @@ export async function PATCH(request: Request, { params }: { params: { id: string
   }
 
   const session = await updateSessionStatus(Number(params.id), body.status);
-  return session
-    ? NextResponse.json(session)
-    : NextResponse.json({ message: "강의 건을 찾을 수 없습니다." }, { status: 404 });
+  if (!session) {
+    return NextResponse.json({ message: "강의 건을 찾을 수 없습니다." }, { status: 404 });
+  }
+
+  if (body.status === "paid") {
+    try {
+      const currentSession = await getSession(Number(params.id));
+      if (currentSession) {
+        await sendPaymentCompletedNotification(currentSession);
+      }
+    } catch (caughtError) {
+      const message =
+        caughtError instanceof Error
+          ? `지급 완료로 변경되었지만 문자 통보는 실패했습니다. ${caughtError.message}`
+          : "지급 완료로 변경되었지만 문자 통보는 실패했습니다.";
+      return NextResponse.json({ ...session, message }, { status: 200 });
+    }
+  }
+
+  return NextResponse.json(session);
 }

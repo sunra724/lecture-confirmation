@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAttachmentUpload, createSubmission, getSessionByToken } from "@/lib/db";
+import { extractIdCardInfo } from "@/lib/id-card-ocr";
 import { sendSubmissionNotification } from "@/lib/notify";
 
 export const runtime = "nodejs";
@@ -53,10 +54,12 @@ export async function POST(request: Request) {
   }
 
   try {
+    const extractedIdInfo = await extractIdCardInfo(idCard);
     const { submissionId } = await createSubmission({
       token,
       lecturer_name: lecturerName,
       lecturer_phone: lecturerPhone,
+      resident_id: extractedIdInfo?.residentId ?? "",
       affiliation_title: affiliationTitle,
       address,
       bank_name: bankName,

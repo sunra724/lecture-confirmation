@@ -42,7 +42,15 @@ export function AdminDashboard({ initialSessions }: { initialSessions: SessionRe
               강의 건 생성, 상태 확인, 삭제까지 여기서 관리할 수 있습니다.
             </p>
           </div>
-          <SessionCreateDialog onCreated={(session) => setSessions((current) => [session, ...current])} />
+          <div className="flex flex-wrap items-center gap-3">
+            <a
+              className="inline-flex items-center rounded-full border border-soilab-navy/15 px-4 py-3 text-sm font-semibold text-soilab-navy transition hover:border-soilab-navy hover:bg-soilab-paper"
+              href="/api/export/reviewed"
+            >
+              검토완료 엑셀 다운로드
+            </a>
+            <SessionCreateDialog onCreated={(session) => setSessions((current) => [session, ...current])} />
+          </div>
         </div>
 
         <div className="mt-5 flex flex-wrap gap-2">

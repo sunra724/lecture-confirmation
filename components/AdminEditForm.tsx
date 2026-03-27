@@ -25,6 +25,7 @@ export function AdminEditForm({
     lecturer_name: submission?.lecturer_name ?? session.lecturer_name,
     lecturer_phone: submission?.lecturer_phone ?? session.lecturer_phone,
     lecturer_email: session.lecturer_email ?? "",
+    resident_id: submission?.resident_id ?? "",
     affiliation_title: submission?.affiliation_title ?? "",
     address: submission?.address ?? "",
     bank_name: submission?.bank_name ?? "",
@@ -56,6 +57,7 @@ export function AdminEditForm({
           lecturer_name: form.lecturer_name,
           lecturer_phone: form.lecturer_phone,
           lecturer_email: form.lecturer_email,
+          resident_id: form.resident_id,
           affiliation_title: form.affiliation_title,
           address: form.address,
           bank_name: form.bank_name,
@@ -148,6 +150,15 @@ export function AdminEditForm({
       </label>
       {submission ? (
         <>
+          <label className="block">
+            <span className="mb-2 block text-sm font-semibold text-slate-800">주민번호</span>
+            <input
+              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+              onChange={(event) => setForm((current) => ({ ...current, resident_id: event.target.value }))}
+              placeholder="000000-0000000"
+              value={form.resident_id}
+            />
+          </label>
           <label className="block">
             <span className="mb-2 block text-sm font-semibold text-slate-800">소속 및 직위</span>
             <input className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" onChange={(event) => setForm((current) => ({ ...current, affiliation_title: event.target.value }))} value={form.affiliation_title} />
