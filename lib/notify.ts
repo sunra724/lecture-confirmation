@@ -126,7 +126,7 @@ async function sendSolapiNotification(session: SessionRecord, baseUrl?: string):
     kakaoOptions: {
       pfId,
       templateId,
-      disableSms: false,
+      disableSms: true,
       variables: {
         이름: recipientName
       }
