@@ -30,8 +30,8 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     } catch (caughtError) {
       const message =
         caughtError instanceof Error
-          ? `지급 완료로 변경되었지만 문자 통보는 실패했습니다. ${caughtError.message}`
-          : "지급 완료로 변경되었지만 문자 통보는 실패했습니다.";
+          ? `지급 완료로 변경되었지만 알림톡/문자 통보는 실패했습니다. ${caughtError.message}`
+          : "지급 완료로 변경되었지만 알림톡/문자 통보는 실패했습니다.";
       return NextResponse.json({ ...session, message }, { status: 200 });
     }
   }

@@ -76,8 +76,8 @@ function getLecturerPhone(session: SessionRecord) {
 
 function getSolapiConfig() {
   const sender = process.env.SOLAPI_SENDER?.trim();
-  const pfId = process.env.SOLAPI_PFID?.trim();
-  const templateId = process.env.SOLAPI_TEMPLATE_ID?.trim();
+  const pfId = process.env.SOLAPI_PF_ID?.trim() || process.env.SOLAPI_PFID?.trim();
+  const templateId = process.env.SOLAPI_TEMPLATE_SUBMIT?.trim() || process.env.SOLAPI_TEMPLATE_ID?.trim();
 
   if (!sender) {
     throw new Error("SOLAPI_SENDER가 설정되지 않았습니다.");
@@ -89,6 +89,18 @@ function getSolapiConfig() {
 
   if (!templateId) {
     throw new Error("SOLAPI_TEMPLATE_ID가 설정되지 않았습니다.");
+  }
+
+  return { sender, pfId, templateId };
+}
+
+function getPaidTemplateConfig() {
+  const sender = process.env.SOLAPI_SENDER?.trim();
+  const pfId = process.env.SOLAPI_PF_ID?.trim() || process.env.SOLAPI_PFID?.trim();
+  const templateId = process.env.SOLAPI_TEMPLATE_PAID?.trim();
+
+  if (!sender || !pfId || !templateId) {
+    return null;
   }
 
   return { sender, pfId, templateId };
@@ -247,10 +259,12 @@ export async function sendSubmissionNotification(params: {
 
 export async function sendPaymentCompletedNotification(session: SessionRecord) {
   const messageService = getSolapiService();
-  const { sender } = getSolapiConfig();
   const recipientPhone = getLecturerPhone(session);
   const recipientName = session.lecturer_name || "강사";
-  const text = [
+  const paidAtText = new Date(session.paid_at ?? new Date().toISOString()).toLocaleString("ko-KR", {
+    timeZone: "Asia/Seoul"
+  });
+  const smsText = [
     "[협동조합 소이랩]",
     `안녕하세요, ${recipientName}님.`,
     "",
@@ -259,11 +273,36 @@ export async function sendPaymentCompletedNotification(session: SessionRecord) {
     "",
     `문의: ${process.env.NOTIFY_CONTACT ?? "053-941-9003"}`
   ].join("\n");
+  const paidTemplateConfig = getPaidTemplateConfig();
 
+  if (paidTemplateConfig) {
+    try {
+      await messageService.sendOne({
+        to: recipientPhone,
+        from: paidTemplateConfig.sender,
+        text: smsText,
+        type: "ATA",
+        kakaoOptions: {
+          pfId: paidTemplateConfig.pfId,
+          templateId: paidTemplateConfig.templateId,
+          disableSms: false,
+          variables: {
+            "#{이름}": recipientName,
+            "#{이체일시}": paidAtText
+          }
+        }
+      });
+      return;
+    } catch {
+      // Fall through to LMS fallback.
+    }
+  }
+
+  const { sender } = getSolapiConfig();
   await messageService.sendOne({
     to: recipientPhone,
     from: sender,
-    text,
+    text: smsText,
     type: "LMS"
   });
 }
