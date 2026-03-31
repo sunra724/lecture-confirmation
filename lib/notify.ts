@@ -110,6 +110,7 @@ async function sendSolapiNotification(session: SessionRecord, baseUrl?: string):
   const messageService = getSolapiService();
   const { sender, pfId, templateId } = getSolapiConfig();
   const publicLink = getPublicLink(session, baseUrl);
+  const strippedLink = publicLink.replace(/^https?:\/\//i, "");
   const recipientPhone = getLecturerPhone(session);
   const recipientName = session.lecturer_name || "강사";
 
@@ -140,8 +141,17 @@ async function sendSolapiNotification(session: SessionRecord, baseUrl?: string):
       templateId,
       disableSms: true,
       variables: {
-        이름: recipientName
-      }
+        "#{이름}": recipientName,
+        "#{링크}": strippedLink
+      },
+      buttons: [
+        {
+          buttonType: "WL",
+          buttonName: "서류 제출하기",
+          linkMo: `https://${strippedLink}`,
+          linkPc: `https://${strippedLink}`
+        }
+      ]
     }
   });
 
@@ -314,10 +324,15 @@ export async function sendSessionLinkNotification(
 ): Promise<NotificationResult> {
   if (preferredChannel === "combined") {
     const emailResult = await sendSessionLinkNotification(session, "email", baseUrl);
-    const smsResult = await sendSmsFallbackNotification(session, baseUrl);
+    let deliveryResult: NotificationResult;
+    try {
+      deliveryResult = await sendSolapiNotification(session, baseUrl);
+    } catch {
+      deliveryResult = await sendSmsFallbackNotification(session, baseUrl);
+    }
     return {
       channel: "combined" as const,
-      recipient: `${emailResult.recipient}, ${smsResult.recipient}`,
+      recipient: `${emailResult.recipient}, ${deliveryResult.recipient}`,
       link: emailResult.link
     };
   }
