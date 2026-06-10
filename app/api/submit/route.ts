@@ -101,6 +101,7 @@ export async function POST(request: Request) {
     await sendSubmissionNotification({
       lecturerName,
       lecturerEmail: session.lecturer_email,
+      adminEmail: session.admin_notification_email,
       lectureTitle: session.lecture_title,
       lectureDate: session.lecture_date,
       timeStart: session.time_start,

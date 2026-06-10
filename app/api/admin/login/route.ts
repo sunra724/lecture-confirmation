@@ -1,13 +1,22 @@
 import { NextResponse } from "next/server";
-import { createAdminSession, isValidAdminPassword } from "@/lib/auth";
+import { AdminAuthError, authenticateAdmin, createAdminSession } from "@/lib/auth";
 
 export async function POST(request: Request) {
-  const body = (await request.json().catch(() => null)) as { password?: string } | null;
+  const body = (await request.json().catch(() => null)) as { email?: string; password?: string } | null;
 
-  if (!body?.password || !isValidAdminPassword(body.password)) {
-    return NextResponse.json({ message: "관리자 비밀번호가 올바르지 않습니다." }, { status: 401 });
+  try {
+    const admin = await authenticateAdmin({
+      email: body?.email ?? "",
+      password: body?.password ?? ""
+    });
+
+    createAdminSession(admin);
+    return NextResponse.json({ ok: true });
+  } catch (caughtError) {
+    if (caughtError instanceof AdminAuthError) {
+      return NextResponse.json({ message: caughtError.message }, { status: caughtError.status });
+    }
+
+    return NextResponse.json({ message: "관리자 로그인 중 오류가 발생했습니다." }, { status: 500 });
   }
-
-  createAdminSession();
-  return NextResponse.json({ ok: true });
 }

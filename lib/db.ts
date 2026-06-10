@@ -24,6 +24,7 @@ type SessionRow = {
   lecturer_name: string | null;
   lecturer_phone: string | null;
   lecturer_email: string | null;
+  admin_notification_email: string | null;
   status: SessionRecord["status"];
   link_sent_at: string | null;
   link_sent_via: string | null;
@@ -80,6 +81,7 @@ const SESSION_DETAIL_SELECT = `
   lecturer_name,
   lecturer_phone,
   lecturer_email,
+  admin_notification_email,
   status,
   link_sent_at,
   link_sent_via,
@@ -182,6 +184,7 @@ function mapSession(row: SessionRow): SessionRecord {
     lecturer_name: String(row.lecturer_name ?? ""),
     lecturer_phone: String(row.lecturer_phone ?? ""),
     lecturer_email: String(row.lecturer_email ?? ""),
+    admin_notification_email: String(row.admin_notification_email ?? ""),
     status: row.status,
     link_sent_at: row.link_sent_at,
     link_sent_via: row.link_sent_via,
@@ -310,6 +313,7 @@ export async function createSession(input: SessionInput) {
       lecturer_name: input.lecturer_name ?? "",
       lecturer_phone: input.lecturer_phone ?? "",
       lecturer_email: input.lecturer_email ?? "",
+      admin_notification_email: input.admin_notification_email ?? "",
       status: "pending",
       created_at: timestamp,
       updated_at: timestamp
@@ -604,6 +608,7 @@ export async function updateSessionDetail(id: number, input: SessionUpdateInput)
       lecturer_name: input.lecturer_name,
       lecturer_phone: input.lecturer_phone,
       lecturer_email: input.lecturer_email ?? current.session.lecturer_email,
+      admin_notification_email: input.admin_notification_email ?? current.session.admin_notification_email,
       updated_at: timestamp
     })
     .eq("id", id);

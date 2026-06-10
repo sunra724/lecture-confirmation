@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 export function AdminLoginForm() {
   const router = useRouter();
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -18,7 +19,7 @@ export function AdminLoginForm() {
       const response = await fetch("/api/admin/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password })
+        body: JSON.stringify({ email, password })
       });
 
       if (!response.ok) {
@@ -38,11 +39,23 @@ export function AdminLoginForm() {
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
       <label className="block">
-        <span className="mb-2 block text-sm font-semibold text-slate-700">관리자 비밀번호</span>
+        <span className="mb-2 block text-sm font-semibold text-slate-700">관리자 이메일</span>
         <input
+          autoComplete="email"
+          className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="admin@example.com"
+          type="email"
+          value={email}
+        />
+      </label>
+      <label className="block">
+        <span className="mb-2 block text-sm font-semibold text-slate-700">비밀번호</span>
+        <input
+          autoComplete="current-password"
           className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
           onChange={(event) => setPassword(event.target.value)}
-          placeholder="비밀번호 입력"
+          placeholder="Supabase 계정 비밀번호"
           type="password"
           value={password}
         />
@@ -50,7 +63,7 @@ export function AdminLoginForm() {
       {error ? <p className="text-sm text-rose-500">{error}</p> : null}
       <button
         className="inline-flex w-full items-center justify-center rounded-2xl bg-soilab-navy px-5 py-3 text-sm font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:bg-slate-300"
-        disabled={loading || !password.trim()}
+        disabled={loading || !email.trim() || !password.trim()}
         type="submit"
       >
         {loading ? "로그인 중..." : "관리자 로그인"}

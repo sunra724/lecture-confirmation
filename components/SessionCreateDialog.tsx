@@ -14,7 +14,8 @@ const INITIAL_FORM: SessionInput = {
   fee: 0,
   lecturer_name: "",
   lecturer_phone: "",
-  lecturer_email: ""
+  lecturer_email: "",
+  admin_notification_email: ""
 };
 
 export function SessionCreateDialog({
@@ -215,6 +216,17 @@ export function SessionCreateDialog({
                   placeholder="example@email.com"
                   type="email"
                   value={form.lecturer_email}
+                />
+              </label>
+
+              <label className="block md:col-span-2">
+                <span className="mb-2 block text-sm font-semibold text-slate-800">제출 알림 받을 관리자 이메일</span>
+                <input
+                  className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+                  onChange={(event) => updateField("admin_notification_email", event.target.value)}
+                  placeholder="admin@email.com"
+                  type="email"
+                  value={form.admin_notification_email}
                 />
               </label>
 

@@ -13,6 +13,7 @@ export type SessionRecord = {
   lecturer_name: string;
   lecturer_phone: string;
   lecturer_email: string;
+  admin_notification_email: string;
   status: SessionStatus;
   link_sent_at: string | null;
   link_sent_via: string | null;
@@ -66,6 +67,7 @@ export type SessionInput = {
   lecturer_name?: string;
   lecturer_phone?: string;
   lecturer_email?: string;
+  admin_notification_email?: string;
 };
 
 export type SubmissionInput = {
@@ -97,6 +99,7 @@ export type SessionUpdateInput = {
   lecturer_name: string;
   lecturer_phone: string;
   lecturer_email?: string;
+  admin_notification_email?: string;
   resident_id?: string;
   affiliation_title?: string;
   address?: string;

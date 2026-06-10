@@ -83,6 +83,10 @@ export default async function AdminDetailPage({ params }: { params: { id: string
               <dd className="mt-1 text-sm text-slate-700">{formatFee(session.fee)}</dd>
             </div>
             <div>
+              <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">제출 알림 이메일</dt>
+              <dd className="mt-1 text-sm text-slate-700">{session.admin_notification_email || process.env.EMAIL_TO || "-"}</dd>
+            </div>
+            <div>
               <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">상태</dt>
               <dd className="mt-1">
                 <span

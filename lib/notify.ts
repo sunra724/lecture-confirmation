@@ -23,10 +23,10 @@ function isPublicBaseUrl(baseUrl: string) {
   return !/localhost|127\.0\.0\.1/i.test(baseUrl);
 }
 
-function getAdminRecipient() {
-  const recipient = process.env.EMAIL_TO;
+function getAdminRecipient(recipientOverride?: string) {
+  const recipient = recipientOverride?.trim() || process.env.EMAIL_TO;
   if (!recipient) {
-    throw new Error("EMAIL_TO가 설정되지 않았습니다.");
+    throw new Error("관리자 알림 이메일이 설정되지 않았습니다.");
   }
   return recipient;
 }
@@ -198,6 +198,7 @@ async function sendSmsFallbackNotification(session: SessionRecord, baseUrl?: str
 export async function sendSubmissionNotification(params: {
   lecturerName: string;
   lecturerEmail?: string;
+  adminEmail?: string;
   lectureTitle: string;
   lectureDate: string;
   timeStart: string;
@@ -230,7 +231,7 @@ export async function sendSubmissionNotification(params: {
   `;
 
   await sendMail({
-    to: getAdminRecipient(),
+    to: getAdminRecipient(params.adminEmail),
     subject: adminSubject,
     html: adminHtml
   });

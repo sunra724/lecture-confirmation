@@ -11,6 +11,7 @@ create table if not exists sessions (
   lecturer_name text default '',
   lecturer_phone text default '',
   lecturer_email text default '',
+  admin_notification_email text default '',
   status text not null default 'pending',
   link_sent_at timestamptz,
   link_sent_via text,
@@ -57,6 +58,9 @@ add column if not exists ocr_raw text default '';
 
 alter table submissions
 add column if not exists ocr_error text default '';
+
+alter table sessions
+add column if not exists admin_notification_email text default '';
 
 create table if not exists attachments (
   id bigint generated always as identity primary key,

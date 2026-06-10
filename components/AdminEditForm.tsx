@@ -25,6 +25,7 @@ export function AdminEditForm({
     lecturer_name: submission?.lecturer_name ?? session.lecturer_name,
     lecturer_phone: submission?.lecturer_phone ?? session.lecturer_phone,
     lecturer_email: session.lecturer_email ?? "",
+    admin_notification_email: session.admin_notification_email ?? "",
     resident_id: submission?.resident_id ?? "",
     affiliation_title: submission?.affiliation_title ?? "",
     address: submission?.address ?? "",
@@ -57,6 +58,7 @@ export function AdminEditForm({
           lecturer_name: form.lecturer_name,
           lecturer_phone: form.lecturer_phone,
           lecturer_email: form.lecturer_email,
+          admin_notification_email: form.admin_notification_email,
           resident_id: form.resident_id,
           affiliation_title: form.affiliation_title,
           address: form.address,
@@ -146,6 +148,16 @@ export function AdminEditForm({
           placeholder="example@email.com"
           type="email"
           value={form.lecturer_email}
+        />
+      </label>
+      <label className="block md:col-span-2">
+        <span className="mb-2 block text-sm font-semibold text-slate-800">제출 알림 받을 관리자 이메일</span>
+        <input
+          className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+          onChange={(event) => setForm((current) => ({ ...current, admin_notification_email: event.target.value }))}
+          placeholder="admin@email.com"
+          type="email"
+          value={form.admin_notification_email}
         />
       </label>
       {submission ? (

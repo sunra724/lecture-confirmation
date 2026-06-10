@@ -8,7 +8,7 @@ export default function AdminLoginPage() {
           <div className="mb-3 text-sm font-semibold uppercase tracking-[0.28em] text-soilab-navy">SOILAB COOP</div>
           <h1 className="text-3xl font-bold tracking-tight text-slate-900">강의확인서 관리자</h1>
           <p className="mt-3 text-sm leading-6 text-slate-500">
-            관리자 비밀번호를 입력하면 강의 등록, 링크 발송, 제출 현황 확인, 삭제까지 한 화면에서 관리할 수 있습니다.
+            Supabase에 등록된 관리자 이메일 계정으로 로그인하면 강의 등록, 링크 발송, 제출 현황 확인, 삭제까지 한 화면에서 관리할 수 있습니다.
           </p>
         </div>
         <AdminLoginForm />
