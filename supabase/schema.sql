@@ -62,6 +62,18 @@ add column if not exists ocr_error text default '';
 alter table sessions
 add column if not exists admin_notification_email text default '';
 
+alter table sessions
+add column if not exists link_sent_via text;
+
+alter table sessions
+add column if not exists last_notification_error text;
+
+alter table sessions
+add column if not exists reviewed_at timestamptz;
+
+alter table sessions
+add column if not exists paid_at timestamptz;
+
 create table if not exists attachments (
   id bigint generated always as identity primary key,
   submission_id bigint not null references submissions(id) on delete cascade,
