@@ -15,7 +15,7 @@ function normalizeResidentId(value: string) {
 }
 
 function stripJsonFence(value: string) {
-  return value.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/\s*```$/i, "").trim();
+  return value.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "").trim();
 }
 
 function normalizeWhitespace(value: string) {
@@ -85,7 +85,7 @@ function parseLooseText(raw: string) {
 
 export async function extractIdCardInfo(file: File): Promise<IdCardExtractionResult | null> {
   const apiKey = process.env.ANTHROPIC_API_KEY?.trim();
-  const model = process.env.ANTHROPIC_MODEL?.trim() || "claude-sonnet-4-20250514";
+  const model = process.env.ANTHROPIC_MODEL?.trim() || "claude-sonnet-5";
 
   if (!apiKey) {
     return {
@@ -149,7 +149,7 @@ export async function extractIdCardInfo(file: File): Promise<IdCardExtractionRes
     },
     body: JSON.stringify({
       model,
-      max_tokens: 400,
+      max_tokens: 2048,
       system: "당신은 한국 신분증 OCR 추출기입니다. 반드시 지정된 JSON만 반환합니다.",
       messages: [
         {
@@ -178,6 +178,20 @@ export async function extractIdCardInfo(file: File): Promise<IdCardExtractionRes
   }
 
   const data = (await response.json().catch(() => null)) as unknown;
+  const stopReason = data && typeof data === "object" && "stop_reason" in data
+    ? data.stop_reason
+    : null;
+  if (stopReason === "refusal" || stopReason === "max_tokens" || stopReason === "model_context_window_exceeded") {
+    return {
+      name: "",
+      residentId: "",
+      address: "",
+      raw: "",
+      error: stopReason === "refusal"
+        ? "AI가 OCR 요청을 거부했습니다. 이미지를 확인해주세요."
+        : "OCR 응답이 길이 제한으로 중단되었습니다. 이미지를 나누어 다시 시도해주세요."
+    };
+  }
   const raw = extractTextFromAnthropicResponse(data);
   if (!raw) {
     return {
@@ -203,7 +217,13 @@ export async function extractIdCardInfo(file: File): Promise<IdCardExtractionRes
       address: normalizeWhitespace(String(parsed.address ?? ""))
     };
   } catch {
-    parsedValues = parseLooseText(raw);
+    return {
+      name: "",
+      residentId: "",
+      address: "",
+      raw,
+      error: "OCR 응답을 JSON으로 해석하지 못했습니다. 다시 시도해주세요."
+    };
   }
 
   const fallbackValues = parseLooseText(raw);
