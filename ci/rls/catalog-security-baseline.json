@@ -1,0 +1,19 @@
+{
+  "source": "Audited catalog metadata, no rows or function bodies",
+  "collectedAt": "2026-10-14T07:46:42.690Z",
+  "ref": "duwhavgcidfoamygmcsm",
+  "existingRlsTables": [
+    {
+      "schema": "public",
+      "name": "sessions"
+    },
+    {
+      "schema": "public",
+      "name": "submissions"
+    },
+    {
+      "schema": "public",
+      "name": "attachments"
+    }
+  ]
+}

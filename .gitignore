@@ -11,3 +11,8 @@ lecture.db-wal
 uploads
 
 .vercel
+
+# Disposable security verification artifacts
+/rls-ci-evidence.json
+/query-surface-evidence.json
+/supabase-test-db.log

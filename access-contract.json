@@ -1,0 +1,51 @@
+{
+  "project": "lecture-confirmation",
+  "ref": "duwhavgcidfoamygmcsm",
+  "reviewedTargets": [
+    {
+      "schema": "public",
+      "table": "proposals",
+      "classification": "server_only",
+      "anon": [],
+      "authenticated": [],
+      "test": "supabase/tests/rls_permissions.test.sql"
+    },
+    {
+      "schema": "public",
+      "table": "expenditures",
+      "classification": "server_only",
+      "anon": [],
+      "authenticated": [],
+      "test": "supabase/tests/rls_permissions.test.sql"
+    },
+    {
+      "schema": "public",
+      "table": "stamp_settings",
+      "classification": "server_only",
+      "anon": [],
+      "authenticated": [],
+      "test": "supabase/tests/rls_permissions.test.sql"
+    }
+  ],
+  "baselineRelations": [
+    "public.proposals",
+    "public.expenditures",
+    "public.stamp_settings",
+    "public.sessions",
+    "public.submissions",
+    "public.attachments"
+  ],
+  "existingBaselineReview": "Only warning targets classified by this patch; remaining baseline objects require their own access review",
+  "blockingQuestions": [],
+  "exposedSchemas": [
+    "public",
+    "graphql_public"
+  ],
+  "testClaimsAreSynthetic": true,
+  "usageEvidence": {
+    "source": "Direct owner reply in this task",
+    "confirmedAt": "2026-10-16 Asia/Seoul",
+    "intent": "Legacy feature only; no current use",
+    "handling": "Preserve legacy data, deny clients, retain backend access; no production apply authorized"
+  }
+}
